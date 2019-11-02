@@ -4,13 +4,76 @@ public class Astar{
 		Node start = new Node(0);
 		start.initializeBoard();
 		start.displayBoard();
+		PriorityQueue<Node> openNodes = new PriorityQueue<>(new Comparator<Node>(){
+			public int compare(Node o1, Node o2){
+				if(o1.getCost()!=o2.getCost())
+					return o1.getCost()-o2.getCost();
+				return o1.getHeuristic() - o2.getCost();
+			}
+		});
+		
+		openNodes.add(start);
+		
+		ArrayList<Node> closeNodes = new ArrayList<Node>();
+		Stack<Node> solution = new Stack<Node>();
+		
+		while(openNodes.isEmpty() == false){
+			Node current = openNodes.poll();
+			if(current.getHeuristic()==0){
+				while(current!=null){
+					solution.push(current);
+					current = current.parent;
+				}
+				break;
+			}
+			
+			closeNodes.add(current);
+			
+			for(Node move:current.getMoves()){
+				boolean isClosed = false;
+				for(Node close : closeNodes){
+					if(close.isSame(move)){
+						isClosed = true;
+						break;
+					}
+				}
+				
+				for(Node open : openNodes){
+					if(open.isSame(move)&&(move.getCost()<open.getCost())){
+						Node tempParent = open.parent;
+						open.parent = move.parent;
+						move.parent = tempParent;
+						int height = open.height;
+						open.height = move.height;
+						move.height = open.height;
+						
+						isClosed = true;
+						break;
+					}
+				}
+				
+				if(!isClosed){
+					openNodes.add(move);
+				}
+			}
+		}
+		
+		if(solution.isEmpty()){
+			System.out.println("No solution found");		
+		}else{
+			while(!solution.isEmpty()){
+				solution.pop().displayBoard();
+				System.out.println("");			
+				
+			}
+		}
 	}
 }
 
 class Node{
-	int[][] board;
-	int height;
-	Node parent;
+	public int[][] board;
+	public int height;
+	public Node parent;
 	public Node(int height){
 		this.height = height;
 		parent = null;
@@ -98,7 +161,7 @@ class Node{
 	}
 	
 	public List<Node> getMoves(){
-		ArrayList<Node> = new ArrayList<Node>();
+		ArrayList<Node> moves = new ArrayList<Node>();
 		int row = 0;
 		int col = 0;
 		for(int i=0;i<3;i++){
@@ -112,17 +175,42 @@ class Node{
 		}
 		
 		if(row>0){
-		
+			Node move = getCopy();
+			move.parent = this;
+			move.height = this.height+1;
+			int t = move.board[row][col];
+			move.board[row][col] = move.board[row-1][col];
+			move.board[row-1][col] = t;
+			moves.add(move);
 		}
 		if(row<2){
-		
+			Node move = getCopy();
+			move.parent = this;
+			move.height = this.height+1;
+			int t = move.board[row][col];
+			move.board[row][col] = move.board[row+1][col];
+			move.board[row+1][col] = t;
+			moves.add(move);
 		}
 		if(col>0){
-		
+			Node move = getCopy();
+			move.parent = this;
+			move.height = this.height+1;
+			int t = move.board[row][col];
+			move.board[row][col] = move.board[row][col-1];
+			move.board[row][col-1] = t;
+			moves.add(move);
 		}
 		if(col<2){
-		
+			Node move = getCopy();
+			move.parent = this;
+			move.height = this.height+1;
+			int t = move.board[row][col];
+			move.board[row][col] = move.board[row][col+1];
+			move.board[row][col+1] = t;
+			moves.add(move);
 		}
+		return moves;
 	}
 }
 
