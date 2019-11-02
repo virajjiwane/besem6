@@ -113,9 +113,11 @@ class Node{
 	}
 	
 	public Node getCopy(){
-		Node copy = new Node(this.height);
+		Node copy = new Node(height);
 		copy.parent = this.parent;
-		copy.board = this.board;
+		for(int i = 0; i < 3; i++)
+		for(int j = 0; j < 3; j++)
+			copy.board[i][j] = board[i][j];
 		return copy;
 	}
 	
@@ -175,40 +177,40 @@ class Node{
 		}
 		
 		if(row>0){
-			Node move = getCopy();
-			move.parent = this;
-			move.height = this.height+1;
-			int t = move.board[row][col];
-			move.board[row][col] = move.board[row-1][col];
-			move.board[row-1][col] = t;
-			moves.add(move);
+			Node move1 = getCopy();
+			move1.parent = this;
+			move1.height++;
+			int t = move1.board[row][col];
+			move1.board[row][col] = move1.board[row-1][col];
+			move1.board[row-1][col] = t;
+			moves.add(move1);
 		}
 		if(row<2){
-			Node move = getCopy();
-			move.parent = this;
-			move.height = this.height+1;
-			int t = move.board[row][col];
-			move.board[row][col] = move.board[row+1][col];
-			move.board[row+1][col] = t;
-			moves.add(move);
+			Node move2 = getCopy();
+			move2.parent = this;
+			move2.height++;
+			int t = move2.board[row][col];
+			move2.board[row][col] = move2.board[row+1][col];
+			move2.board[row+1][col] = t;
+			moves.add(move2);
 		}
 		if(col>0){
-			Node move = getCopy();
-			move.parent = this;
-			move.height = this.height+1;
-			int t = move.board[row][col];
-			move.board[row][col] = move.board[row][col-1];
-			move.board[row][col-1] = t;
-			moves.add(move);
+			Node move3 = getCopy();
+			move3.parent = this;
+			move3.height++;
+			int t = move3.board[row][col];
+			move3.board[row][col] = move3.board[row][col-1];
+			move3.board[row][col-1] = t;
+			moves.add(move3);
 		}
 		if(col<2){
-			Node move = getCopy();
-			move.parent = this;
-			move.height = this.height+1;
-			int t = move.board[row][col];
-			move.board[row][col] = move.board[row][col+1];
-			move.board[row][col+1] = t;
-			moves.add(move);
+			Node move4 = getCopy();
+			move4.parent = this;
+			move4.height++;
+			int t = move4.board[row][col];
+			move4.board[row][col] = move4.board[row][col+1];
+			move4.board[row][col+1] = t;
+			moves.add(move4);
 		}
 		return moves;
 	}
